@@ -1,33 +1,34 @@
+import 'package:contact_app/data/contact.dart';
+import 'package:contact_app/ui/contact_list/widget/contact_tile.dart';
+import 'package:contact_app/ui/model/contacts_model.dart';
 import 'package:flutter/material.dart';
+import 'package:faker/faker.dart';
+import 'package:scoped_model/scoped_model.dart';
 
-class ContactListPage extends StatelessWidget {
+class ContactListPage extends StatefulWidget {
   const ContactListPage({super.key});
+
+  @override
+  State<ContactListPage> createState() => _ContactListPageState();
+}
+
+class _ContactListPageState extends State<ContactListPage> {
   @override
   Widget build(BuildContext context) {
-    // List<Widget> contactlists = List.generate(
-    //     100,
-    //     (index) => Center(
-    //       child: const Text(
-    //             'Contact',
-    //             style: TextStyle(fontSize: 30),
-    //           ),
-    //     ));
     return Scaffold(
       appBar: AppBar(
         title: const Text('Contact'),
       ),
-      body: Center(
-          child: ListView.builder(
-        itemCount: 30,
-        itemBuilder: (context, index) {
-          return const Center(
-            child: Text(
-              'Contact',
-              style: TextStyle(fontSize: 30),
-            ),
+      body: ScopedModelDescendant<ContactsModel>(
+        builder: (context, child, model) {
+          return ListView.builder(
+            itemCount: model.contacts.length,
+            itemBuilder: (context, index) {
+              return ContactTile(contactIndex: index);
+            },
           );
         },
-      )),
+      ),
     );
   }
 }
