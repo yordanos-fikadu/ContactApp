@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:contact_app/data/contact.dart';
+import 'package:contact_app/data/db/app_database.dart';
 import 'package:contact_app/ui/contact/contact_edit_page.dart';
 import 'package:contact_app/ui/model/contacts_model.dart';
 import 'package:flutter/material.dart';
@@ -10,9 +11,10 @@ import 'package:scoped_model/scoped_model.dart';
 class ContactTile extends StatelessWidget {
   const ContactTile({super.key, required this.contactIndex});
   final int contactIndex;
+
   @override
   Widget build(BuildContext context) {
-    return Slidable(
+  return Slidable(
       startActionPane: ActionPane(motion: DrawerMotion(), children: [
         SlidableAction(
           onPressed: null,
@@ -80,7 +82,8 @@ class ContactTile extends StatelessWidget {
       return ClipOval(
         child: AspectRatio(
           aspectRatio: 1,
-          child: Image.file(File(displayContact.imageFile!.path),fit: BoxFit.cover),
+          child: Image.file(File(displayContact.imageFile!.path),
+              fit: BoxFit.cover),
         ),
       );
     }
