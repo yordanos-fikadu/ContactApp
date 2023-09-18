@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:contact_app/data/contact.dart';
 import 'package:contact_app/ui/model/contacts_model.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class ContactForm extends StatefulWidget {
@@ -20,6 +23,7 @@ class _ContactFormState extends State<ContactForm> {
   late String _name;
   late String _email;
   late String _phoneNumber;
+   late File _contactImageFile;
   bool get isEditMode => widget.editedContact != null;
   final _formKey = GlobalKey<FormState>();
   @override
@@ -96,21 +100,36 @@ class _ContactFormState extends State<ContactForm> {
 
   Widget _buildContactPicture() {
     final halfScreenDiameter = MediaQuery.of(context).size.width / 2;
-    return Hero(
-      tag: widget.editedContact?.hashCode ?? 0,
-      child: CircleAvatar(
-        radius: halfScreenDiameter / 2,
-        child: _buildCircularAvatarContent(halfScreenDiameter),
+    return GestureDetector(
+      onTap: _onContactPictureTaped,
+      child: Hero(
+        tag: widget.editedContact?.hashCode ?? 0,
+        child: CircleAvatar(
+          radius: halfScreenDiameter / 2,
+          child: _buildCircularAvatarContent(halfScreenDiameter),
+        ),
       ),
     );
   }
 
+  Future<void> _onContactPictureTaped() async {
+    final imageFile = await ImagePicker.platform
+        .getImageFromSource(source: ImageSource.gallery);
+    setState(() {
+      _contactImageFile = imageFile as File;
+    });
+  }
+
   Widget _buildCircularAvatarContent(double halfScreenDiameter) {
     if (isEditMode) {
-      return Text(
-        widget.editedContact!.name[0],
-        style: TextStyle(fontSize: halfScreenDiameter / 2),
-      );
+      if (_contactImageFile == null) {
+        return Text(
+          widget.editedContact!.name[0],
+          style: TextStyle(fontSize: halfScreenDiameter / 2),
+        );
+      } else {
+        return Image.file(_contactImageFile);
+      }
     } else {
       return Icon(
         Icons.person,
