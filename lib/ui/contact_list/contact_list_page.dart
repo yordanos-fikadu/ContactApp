@@ -1,4 +1,5 @@
 import 'package:contact_app/data/contact.dart';
+import 'package:contact_app/ui/contact/contact_create_page.dart';
 import 'package:contact_app/ui/contact_list/widget/contact_tile.dart';
 import 'package:contact_app/ui/model/contacts_model.dart';
 import 'package:flutter/material.dart';
@@ -29,6 +30,13 @@ class _ContactListPageState extends State<ContactListPage> {
           );
         },
       ),
+      floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Navigator.of(context).push(MaterialPageRoute(
+              builder: (_) => ContactCreatePage(),
+            ));
+          },
+          child: Icon(Icons.add)),
     );
   }
 }
