@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class ContactForm extends StatefulWidget {
-   final Contact? editedContact;
-   final int? editedContactIndex;
-   const ContactForm({
+  final Contact? editedContact;
+  final int? editedContactIndex;
+  const ContactForm({
     super.key,
     this.editedContact,
     this.editedContactIndex,
@@ -34,6 +34,7 @@ class _ContactFormState extends State<ContactForm> {
               onSaved: (newValue) {
                 _name = newValue!;
               },
+              initialValue: widget.editedContact!.name,
               validator: _nameValidator,
               decoration: InputDecoration(
                   label: Text('Name'), border: OutlineInputBorder()),
@@ -45,6 +46,7 @@ class _ContactFormState extends State<ContactForm> {
               onSaved: (newValue) {
                 _email = newValue!;
               },
+              initialValue: widget.editedContact!.email,
               validator: _emailValidator,
               decoration: InputDecoration(
                   label: Text('Email'), border: OutlineInputBorder()),
@@ -53,6 +55,7 @@ class _ContactFormState extends State<ContactForm> {
               height: 10,
             ),
             TextFormField(
+              initialValue: widget.editedContact!.phoneNumber,
               onSaved: (newValue) {
                 _phoneNumber = newValue!;
               },
@@ -117,9 +120,15 @@ class _ContactFormState extends State<ContactForm> {
   void _onSavedButtonPresed() {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState?.save();
-      final contact =
+      final newContact =
           Contact(name: _name, email: _email, phoneNumber: _phoneNumber);
-      ScopedModel.of<ContactsModel>(context).addContact(contact);
+          if (widget.editedContact!=null){
+      ScopedModel.of<ContactsModel>(context).updateContact(newContact,widget.ed);
+            
+          } else {
+            
+          }
+      ScopedModel.of<ContactsModel>(context).addContact(newContact);
       Navigator.of(context).pop();
     }
   }

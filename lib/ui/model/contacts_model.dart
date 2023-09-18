@@ -6,7 +6,7 @@ import 'package:scoped_model/scoped_model.dart';
 
 class ContactsModel extends Model {
   final List<Contact> _contacts = List.generate(
-      30,
+      5,
       (index) => Contact(
           name: '${Faker().person.firstName()}  ${Faker().person.lastName()}',
           email: Faker().internet.email(),
@@ -19,10 +19,12 @@ class ContactsModel extends Model {
   }
 
   void addContact(Contact contact) {
-    print(_contacts.length);
     _contacts.add(contact);
-    print(_contacts.length);
+    notifyListeners();
+  }
 
+  void updateContact(Contact contact, int contactIndex) {
+    _contacts[contactIndex] = contact;
     notifyListeners();
   }
 
