@@ -20,6 +20,7 @@ class _ContactFormState extends State<ContactForm> {
   late String _name;
   late String _email;
   late String _phoneNumber;
+  bool get isEditMode => widget.editedContact != null;
   final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
@@ -30,11 +31,15 @@ class _ContactFormState extends State<ContactForm> {
             SizedBox(
               height: 10,
             ),
+            _buildContactPicture(),
+            SizedBox(
+              height: 10,
+            ),
             TextFormField(
               onSaved: (newValue) {
                 _name = newValue!;
               },
-              initialValue: widget.editedContact!.name,
+              initialValue: widget.editedContact?.name,
               validator: _nameValidator,
               decoration: InputDecoration(
                   label: Text('Name'), border: OutlineInputBorder()),
@@ -46,7 +51,7 @@ class _ContactFormState extends State<ContactForm> {
               onSaved: (newValue) {
                 _email = newValue!;
               },
-              initialValue: widget.editedContact!.email,
+              initialValue: widget.editedContact?.email,
               validator: _emailValidator,
               decoration: InputDecoration(
                   label: Text('Email'), border: OutlineInputBorder()),
@@ -55,7 +60,7 @@ class _ContactFormState extends State<ContactForm> {
               height: 10,
             ),
             TextFormField(
-              initialValue: widget.editedContact!.phoneNumber,
+              initialValue: widget.editedContact?.phoneNumber,
               onSaved: (newValue) {
                 _phoneNumber = newValue!;
               },
@@ -89,6 +94,31 @@ class _ContactFormState extends State<ContactForm> {
         ));
   }
 
+  Widget _buildContactPicture() {
+    final halfScreenDiameter = MediaQuery.of(context).size.width / 2;
+    return Hero(
+      tag: widget.editedContact?.hashCode ?? 0,
+      child: CircleAvatar(
+        radius: halfScreenDiameter / 2,
+        child: _buildCircularAvatarContent(halfScreenDiameter),
+      ),
+    );
+  }
+
+  Widget _buildCircularAvatarContent(double halfScreenDiameter) {
+    if (isEditMode) {
+      return Text(
+        widget.editedContact!.name[0],
+        style: TextStyle(fontSize: halfScreenDiameter / 2),
+      );
+    } else {
+      return Icon(
+        Icons.person,
+        size: halfScreenDiameter / 2,
+      );
+    }
+  }
+
   String? _nameValidator(String? value) {
     if (value!.isEmpty) {
       return 'Enter a name';
@@ -120,13 +150,16 @@ class _ContactFormState extends State<ContactForm> {
   void _onSavedButtonPresed() {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState?.save();
-      final newContact =
-          Contact(name: _name, email: _email, phoneNumber: _phoneNumber);
-      if (widget.editedContact != null) {
+      final newOrEditedContact = Contact(
+          name: _name,
+          email: _email,
+          phoneNumber: _phoneNumber,
+          isFavorite: widget.editedContact?.isFavorite ?? false);
+      if (isEditMode) {
         ScopedModel.of<ContactsModel>(context)
-            .updateContact(newContact, widget.editedContactIndex!);
+            .updateContact(newOrEditedContact, widget.editedContactIndex!);
       } else {
-        ScopedModel.of<ContactsModel>(context).addContact(newContact);
+        ScopedModel.of<ContactsModel>(context).addContact(newOrEditedContact);
       }
       Navigator.of(context).pop();
     }
