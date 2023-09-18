@@ -122,13 +122,12 @@ class _ContactFormState extends State<ContactForm> {
       _formKey.currentState?.save();
       final newContact =
           Contact(name: _name, email: _email, phoneNumber: _phoneNumber);
-          if (widget.editedContact!=null){
-      ScopedModel.of<ContactsModel>(context).updateContact(newContact,widget.ed);
-            
-          } else {
-            
-          }
-      ScopedModel.of<ContactsModel>(context).addContact(newContact);
+      if (widget.editedContact != null) {
+        ScopedModel.of<ContactsModel>(context)
+            .updateContact(newContact, widget.editedContactIndex!);
+      } else {
+        ScopedModel.of<ContactsModel>(context).addContact(newContact);
+      }
       Navigator.of(context).pop();
     }
   }
