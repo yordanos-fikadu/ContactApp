@@ -18,7 +18,7 @@ class _ContactListPageState extends State<ContactListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Contact'),
+        title: const Text('Contactt'),
       ),
       body: ScopedModelDescendant<ContactsModel>(
         builder: (context, child, model) {
