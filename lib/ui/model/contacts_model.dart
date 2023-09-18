@@ -28,6 +28,11 @@ class ContactsModel extends Model {
     notifyListeners();
   }
 
+  void deleteContact(int index) {
+    _contacts.removeAt(index);
+    notifyListeners();
+  }
+
   void _sortContact() {
     _contacts.sort(
       (a, b) {
