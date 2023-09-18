@@ -195,6 +195,7 @@ class _ContactFormState extends State<ContactForm> {
           isFavorite: widget.editedContact?.isFavorite ?? false,
           imageFile: _contactImageFile);
       if (isEditMode) {
+        newOrEditedContact.id = widget.editedContact!.id;
         ScopedModel.of<ContactsModel>(context)
             .updateContact(newOrEditedContact, widget.editedContactIndex!);
       } else {

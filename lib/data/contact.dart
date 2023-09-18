@@ -1,6 +1,8 @@
 import 'dart:io';
 
 class Contact {
+  //Database key(id)
+  late int id;
   String name;
   String email;
   String phoneNumber;
