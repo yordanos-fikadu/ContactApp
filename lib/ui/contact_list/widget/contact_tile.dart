@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:contact_app/data/contact.dart';
 import 'package:contact_app/ui/contact/contact_edit_page.dart';
 import 'package:contact_app/ui/model/contacts_model.dart';
@@ -66,8 +68,21 @@ class ContactTile extends StatelessWidget {
     return Hero(
       tag: displayContact.hashCode,
       child: CircleAvatar(
-        child: Text(displayContact.name[0]),
+        child: _buildCircleAvatorContent(displayContact),
       ),
     );
+  }
+
+  Widget _buildCircleAvatorContent(Contact displayContact) {
+    if (displayContact.imageFile == null) {
+      return Text(displayContact.name[0]);
+    } else {
+      return ClipOval(
+        child: AspectRatio(
+          aspectRatio: 1,
+          child: Image.file(File(displayContact.imageFile!.path),fit: BoxFit.cover),
+        ),
+      );
+    }
   }
 }

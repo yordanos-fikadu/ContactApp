@@ -23,9 +23,17 @@ class _ContactFormState extends State<ContactForm> {
   late String _name;
   late String _email;
   late String _phoneNumber;
-   late File _contactImageFile;
+  File? _contactImageFile;
   bool get isEditMode => widget.editedContact != null;
+  bool get hasSelectedCustomImage => _contactImageFile != null;
   final _formKey = GlobalKey<FormState>();
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _contactImageFile = widget.editedContact?.imageFile;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -116,24 +124,35 @@ class _ContactFormState extends State<ContactForm> {
     final imageFile = await ImagePicker.platform
         .getImageFromSource(source: ImageSource.gallery);
     setState(() {
-      _contactImageFile = imageFile as File;
+      _contactImageFile = File(imageFile!.path);
     });
   }
 
   Widget _buildCircularAvatarContent(double halfScreenDiameter) {
-    if (isEditMode) {
-      if (_contactImageFile == null) {
-        return Text(
-          widget.editedContact!.name[0],
-          style: TextStyle(fontSize: halfScreenDiameter / 2),
-        );
-      } else {
-        return Image.file(_contactImageFile);
-      }
+    if (isEditMode || hasSelectedCustomImage) {
+      return _buildEditModeCircleAvatorContent(halfScreenDiameter);
     } else {
       return Icon(
         Icons.person,
         size: halfScreenDiameter / 2,
+      );
+    }
+  }
+
+  Widget _buildEditModeCircleAvatorContent(double halfScreenDiameter) {
+    if (_contactImageFile == null) {
+      return Text(
+        widget.editedContact!.name[0],
+        style: TextStyle(fontSize: halfScreenDiameter / 2),
+      );
+    } else {
+      return ClipOval(
+        child: AspectRatio(
+            aspectRatio: 1,
+            child: Image.file(
+              _contactImageFile!,
+              fit: BoxFit.cover,
+            )),
       );
     }
   }
@@ -173,7 +192,8 @@ class _ContactFormState extends State<ContactForm> {
           name: _name,
           email: _email,
           phoneNumber: _phoneNumber,
-          isFavorite: widget.editedContact?.isFavorite ?? false);
+          isFavorite: widget.editedContact?.isFavorite ?? false,
+          imageFile: _contactImageFile);
       if (isEditMode) {
         ScopedModel.of<ContactsModel>(context)
             .updateContact(newOrEditedContact, widget.editedContactIndex!);
